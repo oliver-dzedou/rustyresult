@@ -6,7 +6,7 @@ enum ResultType {
 /**
  * Contains the success value
  */
-interface Ok<T> {
+export interface Ok<T> {
     type: ResultType.Ok,
     value: T
 }
@@ -14,7 +14,7 @@ interface Ok<T> {
 /**
  * Contains the error value
  */
-interface Err<E> {
+export interface Err<E> {
     type: ResultType.Err,
     err: E
 }
@@ -26,7 +26,7 @@ type ResultValue<T, E> = Ok<T> | Err<E>;
  */
 export class Result<T, E> {
     private resultValue: ResultValue<T, E>;
-    
+
     private constructor(resultValue: ResultValue<T, E>) {
         this.resultValue = resultValue;
     }
@@ -40,7 +40,7 @@ export class Result<T, E> {
     static Ok<T, E>(value: T): Result<T, E> {
         return new Result<T, E>({ type: ResultType.Ok, value });
     }
-    
+
     /**
      * Creates a new Err Result with the provided error.
      *
@@ -130,7 +130,7 @@ export class Result<T, E> {
         // @ts-expect-error Does not check if resultValue.type is ResultType.Err before returning resultValue.err
         return this.resultValue.err;
     }
-    
+
     /**
      * Unwraps the Result, returning the contained value if it is Ok.
      * If it is Err, throws an Error with the provided custom message and the contained error.
@@ -191,7 +191,7 @@ export class Result<T, E> {
     isOkAnd(predicate: (value: T) => boolean): boolean {
         return this.resultValue.type === ResultType.Ok && predicate(this.resultValue.value);
     }
-    
+
     /**
      * Returns the contained error if the Result is Err, or null if it is Ok.
      *
