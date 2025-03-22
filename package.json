@@ -1,0 +1,30 @@
+{
+  "name": "rustyresult",
+  "version": "0.1.0",
+  "description": "This package re-implements Rust-like std::result in TypeScript",
+  "main": "index.js",
+  "author": "oliver-dzedou",
+  "license": "MIT",
+  "keywords": [
+    "error",
+    "error handling",
+    "result",
+    "rust"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "test": "jest",
+    "lint": "eslint ./src"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "eslint": "^9.22.0",
+    "eslint-config-defaults": "^9.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.6",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1"
+  }
+}
