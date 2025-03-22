@@ -6,7 +6,7 @@ enum ResultType {
 /**
  * Contains the success value
  */
-interface Ok<T> {
+export interface Ok<T> {
     type: ResultType.Ok,
     value: T
 }
@@ -14,7 +14,7 @@ interface Ok<T> {
 /**
  * Contains the error value
  */
-interface Err<E> {
+export interface Err<E> {
     type: ResultType.Err,
     err: E
 }
@@ -26,7 +26,7 @@ type ResultValue<T, E> = Ok<T> | Err<E>;
  */
 export class Result<T, E> {
     private resultValue: ResultValue<T, E>;
-    
+
     private constructor(resultValue: ResultValue<T, E>) {
         this.resultValue = resultValue;
     }
@@ -40,7 +40,7 @@ export class Result<T, E> {
     static Ok<T, E>(value: T): Result<T, E> {
         return new Result<T, E>({ type: ResultType.Ok, value });
     }
-    
+
     /**
      * Creates a new Err Result with the provided error.
      *
@@ -60,7 +60,7 @@ export class Result<T, E> {
      */
     unwrap(): T {
         if (this.resultValue.type === ResultType.Err) {
-            throw new Error(`Called Result.unwrap() on an Error value: ${this.resultValue.err}`);
+            throw new Error(`Called Result.unwrap() on an Error value: ${JSON.stringify(this.resultValue.err)}`);
         }
         return this.resultValue.value;
     }
@@ -90,7 +90,7 @@ export class Result<T, E> {
         if (this.resultValue.type === ResultType.Err) {
             return this.resultValue.err;
         }
-        throw new Error(`Called Result.unwrapErr() on a non-Error value: ${this.resultValue.type}`);
+        throw new Error(`Called Result.unwrapErr() on an Ok value: ${JSON.stringify(this.resultValue.value)}`);
     }
 
     /**
@@ -130,7 +130,7 @@ export class Result<T, E> {
         // @ts-expect-error Does not check if resultValue.type is ResultType.Err before returning resultValue.err
         return this.resultValue.err;
     }
-    
+
     /**
      * Unwraps the Result, returning the contained value if it is Ok.
      * If it is Err, throws an Error with the provided custom message and the contained error.
@@ -191,7 +191,7 @@ export class Result<T, E> {
     isOkAnd(predicate: (value: T) => boolean): boolean {
         return this.resultValue.type === ResultType.Ok && predicate(this.resultValue.value);
     }
-    
+
     /**
      * Returns the contained error if the Result is Err, or null if it is Ok.
      *
@@ -251,28 +251,28 @@ export class Result<T, E> {
 
     /**
      * If the Result is Ok, returns the provided Result.
-     * If the Result is Err, returns the contained error.
+     * If the Result is Err, returns the contained Err.
      *
      * @param res - A Result to return if the current Result is Ok.
      * @returns The provided Result if the current Result is Ok, or the contained error if Err.
      */
-    and(res: Result<T, E>): E | Result<T, E> {
+    and<U>(res: Result<U, E>): Result<U, E> {
         if (this.resultValue.type === ResultType.Err) {
-            return this.resultValue.err;
+            return this as unknown as Result<U, E>;
         }
         return res;
     }
 
     /**
      * If the Result is Ok, calls the provided function with the contained value and returns its Result.
-     * If the Result is Err, returns the contained error.
+     * If the Result is Err, returns the contained Err.
      *
      * @param op - A function that takes the contained value and returns an alternative Result.
      * @returns The Result returned by the callback if Ok, or the contained error if Err.
      */
-    andThen(op: (value: T) => Result<T, E>): E | Result<T, E> {
+    andThen<U>(op: (value: T) => Result<U, E>): Result<U, E> {
         if (this.resultValue.type === ResultType.Err) {
-            return this.resultValue.err;
+            return this as unknown as Result<U, E>
         }
         return op(this.resultValue.value);
     }

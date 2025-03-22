@@ -1,15 +1,13 @@
 # rustyresult
 
-This package reimplements ``std::result`` from ``Rust`` in ``TypeScript`` (with 0 dependencies)
+This package (almost) reimplements ``std::Result`` from ``Rust`` in ``TypeScript`` (with 0 dependencies)
 
-## Why?
+## Use cases
 
-If you appreciate ``Rust``’s ergonomic and robust error handling paradigm, you’ll find ``rustyresult`` a valuable addition to your ``TypeScript`` projects.
+**This package is for you if:** <br/>
 
-Experience the benefits of ``Rust``-like error handling in your TypeScript development today with ``rustyresult``
-
-For an introduction to ``Rust``’s error handling concepts, please refer to the [Rust by Example Error Handling Guide](https://doc.rust-lang.org/rust-by-example/error.html).
-
+A) You are already familiar with Rust and wish that Typescript had similarly robust and ergonomic error handling <br/>
+B) You are not familiar with Rust but wish that Typescript had more robust and ergonomic error handling <br/>
 
 ## Installation
 
@@ -22,75 +20,39 @@ For an introduction to ``Rust``’s error handling concepts, please refer to the
 ``yarn add rustyresult``
 
 ## Example usage
+```
+// YourAxiosWrapper.ts
+import { Result } from "rustyresult";
+import axios from 'axios';
 
-### Inline
-```
-const result = await Result.fromPromise<User>(axios.get(`https://www.api.com/users${userId}`));
-const user = result.expect("Unknown user");
-// Do things with user
-// No try catch!!
-```
-
-### As a return type
-```
-class Api {
-    async getUser(userId: string): Promise<Result<User>> {
-        return Result.fromAsync<User>(async (url: string) => axios.get(url), `https://www.api.com/users${userId}`);
+export class YourAxiosWrapper {
+    static async get<T>(url: string): Promise<Result<T, Error>> {
+        try {
+            const response = await axios.get(url);
+            return Result.Ok(response);
+        } catch (error) {
+            return error instanceof Error ? Result.Err(error) : Result.Err(new Error("Unexpected error"));
+        }
     }
 }
 
-const getUser = async (userId: string) => {
-    const api = new Api();
-
-    const userResult: Result<User> = await api.getUser(userId);
-    const user: User = userResult.unwrapOr(defaultUser);
-
-    // Do stuff with user
-    // No try/catch!! :)
-}
-```
-
-### Matching value
-
-```
-const result = await Result.fromPromise<User>(axios.get(`https://www.api.com/users${userId}`));
-
-if (result.err()) {
-    console.log("An error occurred while fetching user");
-    return null;
-}
-if (result.ok()) {
-   return result.ok(); 
-}
-
-```
-TODO
-### Chaining results
-
-```
-class Api {
-    async getUser(userId: string): Promise<Result<User>> {
-        return Result.fromAsync<User>(async (url: string) => axios.get(url), `https://www.api.com/users${userId}`);
+// UserApi.ts
+import { YourAxiosWrapper } from "YourAxiosWrapper";
+class UserApi {
+    async getUser(userId: string) {
+        const user = await YourAxiosWrapper.get("https://someapi.com/user/" + userId);
+        // Consumer is now **forced** to deal with the possibility of an error unlike when an error is thrown 
+        // And no try/catch is needed! :)
+        // For example:
+        return user.unwrapOr(defaultUser);
     }
 }
-
-class Db {
-    async getUser(userId: string): Promise<Result<User>> {
-        return Result.fromPromise<User>(dbClient.query(/* some SQL */));
-    }
-}
-
-const getUser = async (userId: string) => {
-    const api = new Api();
-    const db = new Db();
-
-    const userResult = await api.getUser(userId).or()
-
-    // Do stuff with user
-    // No try/catch!! :)
-}
 ```
 
-## Full documentation
+## Documentation
 
-Everything is documented with JSDoc. Have a look at the [source file](./src/index.ts) or install the package and hover over the symbols
+Everything is documented with JSDoc. Have a look at the [source file](./src/index.ts) or install the package and hover over the symbols <br/> 
+
+If you are not familiar with it yet, I also recommend reading the [official docs](https://doc.rust-lang.org/std/result/) for ``std::Result`` 
+
+

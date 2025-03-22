@@ -1,23 +1,17 @@
 import { describe, expect, test, jest } from "@jest/globals";
-import { Result } from "..";
+import { Result } from "../index";
 
 describe("Result", () => {
     const okValue = 42;
     const newValue = 100;
     const errorObj = new Error("Test error");
 
-    // Helper functions for transformations.
     const addOne = (x: number): number => x + 1;
     const transformResult = (x: number): Result<number, Error> => Result.Ok<number, Error>(x + 10);
     const errorToString = (err: Error): string => err.message;
 
-    // Create sample Results.
     const okResult = Result.Ok<number, Error>(okValue);
     const errResult = Result.Err<number, Error>(errorObj);
-
-    // ----------------------------
-    // Instance Method Tests
-    // ----------------------------
 
     describe("unwrap", () => {
         test("should return value for Ok", () => {
@@ -26,7 +20,7 @@ describe("Result", () => {
 
         test("should throw error for Err", () => {
             expect(() => errResult.unwrap()).toThrow(
-                `Called Result.unwrap() on an Error value: ${errorObj}`
+                `Called Result.unwrap() on an Error value: ${JSON.stringify(errorObj)}`
             );
         });
     });
@@ -52,7 +46,7 @@ describe("Result", () => {
 
         test("should throw error for Ok", () => {
             expect(() => okResult.unwrapErr()).toThrow(
-                `Called Result.unwrapErr() on a non-Error value: Ok`
+                `Called Result.unwrapErr() on an Ok value: 42`
             );
         });
     });
@@ -73,7 +67,6 @@ describe("Result", () => {
         });
 
         test("should return undefined for Err (unchecked)", () => {
-            // Since the Err variant does not define 'value', unwrapUnchecked returns undefined.
             expect(errResult.unwrapUnchecked()).toBeUndefined();
         });
     });
@@ -215,19 +208,18 @@ describe("Result", () => {
         });
 
         test("should return contained error when self is Err", () => {
-            expect(errResult.and(otherResult)).toBe(errorObj);
+            expect(errResult.and(otherResult)).toBe(errResult);
         });
     });
 
     describe("andThen", () => {
         test("should apply transform function when Ok", () => {
             const res = okResult.andThen(transformResult);
-            // Since transformResult returns a Result, we expect its unwrapped value.
             expect((res as Result<number, Error>).unwrap()).toBe(okValue + 10);
         });
 
         test("should return contained error when self is Err", () => {
-            expect(errResult.andThen(transformResult)).toBe(errorObj);
+            expect(errResult.andThen(transformResult)).toBe(errResult);
         });
     });
 
@@ -240,7 +232,7 @@ describe("Result", () => {
         test("should preserve Err when mapping over Err", () => {
             const res = errResult.map(addOne);
             expect(() => res.unwrap()).toThrow(
-                `Called Result.unwrap() on an Error value: ${errorObj}`
+                `Called Result.unwrap() on an Error value: ${JSON.stringify(errorObj)}`
             );
         });
     });
@@ -266,11 +258,11 @@ describe("Result", () => {
     });
 
     describe("mapErr", () => {
-        const errorTransform = (err: Error) => `Error: ${err.message}`;
+        const errorTransform = () => 50;
         test("should transform error when Err", () => {
             const res = errResult.mapErr(errorTransform);
             expect(() => res.unwrap()).toThrow(
-                `Called Result.unwrap() on an Error value: Error: ${errorObj.message}`
+                `Called Result.unwrap() on an Error value: 50`
             );
         });
         test("should preserve Ok when mapping error over Ok", () => {
