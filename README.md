@@ -57,3 +57,8 @@ class UserApi {
 Everything is documented with JSDoc. Have a look at the [source file](./src/index.ts) or install the package and hover over the symbols <br/> 
 
 If you are not familiar with it yet, I also recommend reading the [official docs](https://doc.rust-lang.org/std/result/) for ``std::Result`` 
+
+
+## Contributions
+
+Contributors are much appreciated. Whether you spot a bug or have an idea to improve the code, please open an issue and I will take a look ASAP. 
