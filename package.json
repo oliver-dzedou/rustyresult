@@ -1,12 +1,12 @@
 {
   "name": "rustyresult",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This package (almost) re-implements Rust-like std::result in TypeScript (with 0 dependencies)",
   "main": "index.js",
   "author": "oliver-dzedou",
   "license": "MIT",
   "repository": {
-    "url": "https://github.com/oliver-dzedou/rustyresult"
+    "url": "git+https://github.com/oliver-dzedou/rustyresult.git"
   },
   "keywords": [
     "error",
@@ -16,7 +16,7 @@
   ],
   "type": "module",
   "scripts": {
-    "build": "tsup && cp package.json dist/",
+    "build": "tsup && cp package.json dist/ && cp README.md dist/",
     "test": "jest",
     "lint": "eslint ./src",
     "pack": "npm run build && cd dist && npm pack",
