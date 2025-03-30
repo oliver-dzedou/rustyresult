@@ -69,7 +69,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Run Publish
-        run: npm run publish
+      - name: Build package
+        run: npm run build
+
+      - name: Publish package
+        run: cd dist && npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

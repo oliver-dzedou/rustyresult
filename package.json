@@ -1,6 +1,6 @@
 {
   "name": "rustyresult",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This package (almost) re-implements Rust-like std::result in TypeScript (with 0 dependencies)",
   "main": "index.js",
   "author": "oliver-dzedou",
@@ -18,9 +18,7 @@
   "scripts": {
     "build": "tsup && cp package.json dist/ && cp README.md dist/",
     "test": "jest",
-    "lint": "eslint ./src",
-    "pack": "npm run build && cd dist && npm pack",
-    "publish": "npm run build && cd dist && npm publish --provenance --access public"
+    "lint": "eslint ./src"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
