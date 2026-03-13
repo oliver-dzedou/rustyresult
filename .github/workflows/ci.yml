@@ -65,6 +65,7 @@ jobs:
         with:
           node-version: 24.14.0
           registry-url: 'https://registry.npmjs.org'
+    
 
       - name: Install Dependencies
         run: npm install
@@ -73,5 +74,5 @@ jobs:
         run: npm run build
 
       - name: Publish package
-        run: npm publish ./dist --provenance --access public
+        run: NODE_AUTH_TOKEN="" npm publish ./dist --access public
 
