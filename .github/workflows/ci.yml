@@ -64,6 +64,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20.11.0
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
         run: npm install
@@ -72,5 +73,5 @@ jobs:
         run: npm run build
 
       - name: Publish package
-        run: cd dist && npm publish --provenance --access public
+        run: npm publish ./dist --provenance --access public
 
