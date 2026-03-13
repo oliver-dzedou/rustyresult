@@ -1,6 +1,6 @@
 {
   "name": "rustyresult",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "This package (almost) re-implements Rust-like std::result in TypeScript (with 0 dependencies)",
   "main": "index.js",
   "author": "oliver-dzedou",
