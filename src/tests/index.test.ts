@@ -33,7 +33,8 @@ describe("Result", () => {
         });
 
         test("should return fallback value from callback for Err", () => {
-            const op = jest.fn(() => newValue);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const op = jest.fn((obj: Error) => { return 100 });
             expect(errResult.unwrapOrElse(op)).toBe(newValue);
             expect(op).toHaveBeenCalledWith(errorObj);
         });
@@ -195,7 +196,8 @@ describe("Result", () => {
         });
 
         test("should return alternative result from callback when Err", () => {
-            const op = jest.fn(() => alternativeResult);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const op = jest.fn((obj: Error) => alternativeResult);
             expect(errResult.orElse(op)).toBe(alternativeResult);
             expect(op).toHaveBeenCalledWith(errorObj);
         });
